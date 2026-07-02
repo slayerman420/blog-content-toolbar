@@ -1,10 +1,10 @@
 # Contributing
 
-Thank you for considering a contribution to Blog Content Toolbar!
+Thank you for considering a contribution to AIObar!
 
 ## Reporting Issues
 
-Open an [issue](https://github.com/slayerman420/blog-content-toolbar/issues) and include:
+Open an [issue](https://github.com/slayerman420/aiobar/issues) and include:
 - WordPress version
 - PHP version
 - Active theme name
@@ -15,16 +15,16 @@ Open an [issue](https://github.com/slayerman420/blog-content-toolbar/issues) and
 
 1. Fork the repository
 2. Create a feature branch: `git checkout -b feature/my-change`
-3. Make your changes in `blog-content-toolbar.php`
+3. Make your changes in `aiobar.php`
 4. Test on at least one clean WordPress install
 5. Open a PR with a clear description of what changed and why
 
 ## Code Style
 
-- Follow WordPress Coding Standards for PHP (tabs for indentation, Yoda conditions)
+- Follow WordPress Coding Standards for PHP (tabs, Yoda conditions)
 - Keep all JS in ES5 — no arrow functions, no `const`/`let`, no template literals
-- Prefix all PHP functions and constants with `bctb_` / `BCTB_`
-- Prefix all CSS classes with `bctb-`
+- Prefix all PHP functions and constants with `aiobar_` / `AIOBAR_`
+- Prefix all CSS classes with `aiobar-`
 - Zero external dependencies — no CDN calls, no npm packages
 
 ## Architecture Rules (do not break these)
