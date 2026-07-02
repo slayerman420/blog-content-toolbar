@@ -1,6 +1,6 @@
-# Blog Content Toolbar
+# AIObar
 
-> A zero-dependency WordPress plugin that adds a social sharing and AI utility toolbar to every single blog post.
+> A zero-dependency WordPress plugin that makes every blog post LLM-citation ready.
 
 ![WordPress](https://img.shields.io/badge/WordPress-5.8%2B-blue?logo=wordpress)
 ![PHP](https://img.shields.io/badge/PHP-7.4%2B-purple?logo=php)
@@ -11,14 +11,20 @@
 
 ## What It Does
 
-The toolbar renders directly above the post body on every `is_single()` page and gives readers four tools in one row:
+AI tools like Claude, ChatGPT, and Perplexity are increasingly how people discover and consume content. When someone reads your post and wants to summarise, cite, or discuss it with an AI, the experience is usually clunky — copy the URL, open a new tab, paste, write a prompt.
+
+**AIObar removes all of that friction.**
+
+It adds a toolbar directly above every blog post with four tools:
 
 | Feature | What it does |
 |---|---|
-| **Social Share** | One-click buttons for Facebook, LinkedIn, X (Twitter), Reddit — each opens a pre-filled share dialog in a new tab |
-| **Summarize** | Dropdown offering Claude, ChatGPT, and Perplexity — each pre-filled with a "please summarise this article" prompt |
-| **Copy for LLM** | Copies `Title + URL + full plain-text body` to clipboard in one click — ideal for pasting into any AI chat |
-| **View Markdown** | Toggles a collapsible dark-background panel showing the post body as plain text |
+| **Social Share** | One-click buttons for Facebook, LinkedIn, X (Twitter), Reddit |
+| **Summarize** | Dropdown that opens Claude, ChatGPT, or Perplexity pre-filled with a summarise prompt for the current post |
+| **Copy for LLM** | Copies `Title + URL + full plain-text body` to clipboard — structured exactly how AI chat expects it |
+| **View Markdown** | Shows the post body as plain text in a collapsible dark panel — useful for inspecting what an AI will actually read |
+
+The **Copy for LLM** and **Summarize** features are the core of the LLM-citation story: readers can get your content into any AI conversation in one click, with the title and URL intact — meaning the AI has everything it needs to attribute your post as a source.
 
 Pure PHP + vanilla JavaScript. No npm, no Composer, no icon fonts, no external HTTP requests at runtime.
 
@@ -29,40 +35,40 @@ Pure PHP + vanilla JavaScript. No npm, no Composer, no icon fonts, no external H
 ### Option A — Upload via WordPress Admin (recommended)
 
 1. Download or clone this repository.
-2. Zip the `blog-content-toolbar/` folder.
+2. Zip the folder containing `aiobar.php`.
 3. In WordPress Admin go to **Plugins → Add New → Upload Plugin**.
 4. Upload the zip, click **Install Now**, then **Activate Plugin**.
-5. Visit any single post — the toolbar will appear above the content.
+5. Visit any single post — the toolbar appears above the content.
 6. **Purge all caches** (see [Caching](#caching) below).
 
 ### Option B — Manual FTP/SFTP
 
-1. Upload the `blog-content-toolbar/` folder to `/wp-content/plugins/`.
+1. Upload `aiobar.php` to `/wp-content/plugins/aiobar/`.
 2. Activate via **Plugins → Installed Plugins**.
 3. Purge caches.
 
 ### Option C — WP-CLI
 
 ```bash
-wp plugin install https://github.com/slayerman420/blog-content-toolbar/archive/refs/heads/main.zip --activate
+wp plugin install https://github.com/slayerman420/aiobar/archive/refs/heads/main.zip --activate
 ```
 
 ---
 
 ## Configuration
 
-All visual design and behaviour options are PHP constants defined at the top of the plugin. The plugin ships with neutral defaults that work with any theme. Override any constant in `wp-config.php` **before** the `/* That's all, stop editing! */` line.
+All visual design and behaviour options are PHP constants. The plugin ships with neutral defaults that work with any theme. Override any constant in `wp-config.php` **before** the `/* That's all, stop editing! */` line.
 
 ### Visual Constants
 
 | Constant | Default | Controls |
 |---|---|---|
-| `BCTB_PRIMARY_COLOR` | `#000000` | Filled button background on hover / Summarize active state |
-| `BCTB_PRIMARY_HOVER` | `#222222` | Reserved hover shade |
-| `BCTB_BORDER_COLOR` | `#E5E5E5` | Ghost button borders, toolbar divider |
-| `BCTB_TEXT_COLOR` | `#555555` | Button label text and icon colour |
-| `BCTB_FONT_FAMILY` | `system-ui, sans-serif` | All toolbar text |
-| `BCTB_BORDER_RADIUS` | `8px` | Buttons, dropdown, markdown panel corners |
+| `AIOBAR_PRIMARY_COLOR` | `#000000` | Button fill on hover / Summarize active state |
+| `AIOBAR_PRIMARY_HOVER` | `#222222` | Reserved hover shade |
+| `AIOBAR_BORDER_COLOR` | `#E5E5E5` | Ghost button borders, toolbar divider |
+| `AIOBAR_TEXT_COLOR` | `#555555` | Button label text |
+| `AIOBAR_FONT_FAMILY` | `system-ui, sans-serif` | All toolbar text |
+| `AIOBAR_BORDER_RADIUS` | `8px` | Buttons, dropdown, panel corners |
 
 ### Behaviour Constants
 
@@ -74,93 +80,77 @@ All visual design and behaviour options are PHP constants defined at the top of 
 
 ## Tweaking for Your Theme & Blog Guidelines
 
-This section explains every lever available without touching the plugin file itself.
-
 ### 1 — Match Your Brand Colour
-
-Grab your theme's primary hex value from its stylesheet and set `BCTB_PRIMARY_COLOR`:
 
 ```php
 // wp-config.php
-define( 'BCTB_PRIMARY_COLOR', '#e63946' );  // your brand red
-define( 'BCTB_PRIMARY_HOVER', '#c1121f' );  // darker shade
+define( 'AIOBAR_PRIMARY_COLOR', '#e63946' );
+define( 'AIOBAR_PRIMARY_HOVER', '#c1121f' );
 ```
 
 ### 2 — Match Your Typography
 
-Mirror your theme's typeface:
-
 ```php
-define( 'BCTB_FONT_FAMILY', '"Inter", system-ui, sans-serif' );
+define( 'AIOBAR_FONT_FAMILY', '"Inter", system-ui, sans-serif' );
 ```
 
-CSS custom properties work too, if your theme uses them:
+CSS custom properties work too:
 
 ```php
-define( 'BCTB_FONT_FAMILY', 'var(--wp--preset--font-family--body, system-ui)' );
+define( 'AIOBAR_FONT_FAMILY', 'var(--wp--preset--font-family--body, system-ui)' );
 ```
 
 ### 3 — Match Your Corner Radius
 
-Pill-shaped buttons:
 ```php
-define( 'BCTB_BORDER_RADIUS', '999px' );
+define( 'AIOBAR_BORDER_RADIUS', '999px' );  // pill
+define( 'AIOBAR_BORDER_RADIUS', '0px' );    // square
 ```
 
-Sharp square corners:
+### 4 — Theme Example — Dark News Site
+
 ```php
-define( 'BCTB_BORDER_RADIUS', '0px' );
+define( 'AIOBAR_PRIMARY_COLOR', '#ff6b35' );
+define( 'AIOBAR_PRIMARY_HOVER', '#e85d2a' );
+define( 'AIOBAR_BORDER_COLOR',  '#2e2e2e' );
+define( 'AIOBAR_TEXT_COLOR',    '#aaaaaa' );
+define( 'AIOBAR_FONT_FAMILY',   '"DM Sans", sans-serif' );
+define( 'AIOBAR_BORDER_RADIUS', '4px' );
 ```
 
-### 4 — Full Theme Example — Dark News Site
+### 5 — Theme Example — Minimal Lifestyle Blog
 
 ```php
-// wp-config.php
-define( 'BCTB_PRIMARY_COLOR', '#ff6b35' );          // orange accent
-define( 'BCTB_PRIMARY_HOVER', '#e85d2a' );
-define( 'BCTB_BORDER_COLOR',  '#2e2e2e' );          // dark border
-define( 'BCTB_TEXT_COLOR',    '#aaaaaa' );          // muted label text
-define( 'BCTB_FONT_FAMILY',   '"DM Sans", sans-serif' );
-define( 'BCTB_BORDER_RADIUS', '4px' );
+define( 'AIOBAR_PRIMARY_COLOR', '#3d5a80' );
+define( 'AIOBAR_PRIMARY_HOVER', '#2c4a6e' );
+define( 'AIOBAR_BORDER_COLOR',  '#dde3ea' );
+define( 'AIOBAR_TEXT_COLOR',    '#4a4a4a' );
+define( 'AIOBAR_FONT_FAMILY',   '"Lora", Georgia, serif' );
+define( 'AIOBAR_BORDER_RADIUS', '6px' );
 ```
 
-### 5 — Full Theme Example — Minimal Lifestyle Blog
+### 6 — Theme Example — SaaS / Tech Company Blog
 
 ```php
-// wp-config.php
-define( 'BCTB_PRIMARY_COLOR', '#3d5a80' );          // muted navy
-define( 'BCTB_PRIMARY_HOVER', '#2c4a6e' );
-define( 'BCTB_BORDER_COLOR',  '#dde3ea' );
-define( 'BCTB_TEXT_COLOR',    '#4a4a4a' );
-define( 'BCTB_FONT_FAMILY',   '"Lora", Georgia, serif' );
-define( 'BCTB_BORDER_RADIUS', '6px' );
-```
-
-### 6 — Full Theme Example — SaaS / Tech Company Blog
-
-```php
-// wp-config.php
-define( 'BCTB_PRIMARY_COLOR', '#6366f1' );          // indigo
-define( 'BCTB_PRIMARY_HOVER', '#4f46e5' );
-define( 'BCTB_BORDER_COLOR',  '#e0e7ff' );
-define( 'BCTB_TEXT_COLOR',    '#374151' );
-define( 'BCTB_FONT_FAMILY',   '"Inter", system-ui, sans-serif' );
-define( 'BCTB_BORDER_RADIUS', '8px' );
+define( 'AIOBAR_PRIMARY_COLOR', '#6366f1' );
+define( 'AIOBAR_PRIMARY_HOVER', '#4f46e5' );
+define( 'AIOBAR_BORDER_COLOR',  '#e0e7ff' );
+define( 'AIOBAR_TEXT_COLOR',    '#374151' );
+define( 'AIOBAR_FONT_FAMILY',   '"Inter", system-ui, sans-serif' );
+define( 'AIOBAR_BORDER_RADIUS', '8px' );
 ```
 
 ### 7 — Override Spacing via the Customizer
 
-Add rules in **Appearance → Customize → Additional CSS** without touching the plugin:
+Add rules in **Appearance → Customize → Additional CSS**:
 
 ```css
-/* Push toolbar closer to the post title */
-.bctb-toolbar {
+.aiobar-toolbar {
     margin-bottom: 16px !important;
     padding-top: 8px !important;
 }
 
-/* Slightly smaller social icon tap targets */
-.bctb-social-btn {
+.aiobar-social-btn {
     width: 34px !important;
     height: 34px !important;
 }
@@ -170,55 +160,31 @@ Add rules in **Appearance → Customize → Additional CSS** without touching th
 
 ```css
 /* Additional CSS in Customizer */
-
-/* Hide Reddit */
-[data-bctb-action="share-reddit"]      { display: none !important; }
-
-/* Hide Perplexity from Summarize dropdown */
-[data-bctb-action="summarize-perplexity"] { display: none !important; }
-
-/* Hide Copy for LLM */
-[data-bctb-action="copy-llm"]          { display: none !important; }
-
-/* Hide View Markdown */
-[data-bctb-action="view-markdown"]     { display: none !important; }
+[data-aiobar-action="share-reddit"]         { display: none !important; }
+[data-aiobar-action="summarize-perplexity"] { display: none !important; }
+[data-aiobar-action="copy-llm"]             { display: none !important; }
+[data-aiobar-action="view-markdown"]        { display: none !important; }
 ```
 
 ### 9 — Dark-Mode Themes
 
 ```css
-/* Additional CSS in Customizer */
-.bctb-toolbar {
-    border-bottom-color: #333 !important;
-}
-.bctb-social-btn,
-.bctb-action-btn {
-    border-color: #444 !important;
-    color: #ccc !important;
-}
-.bctb-summarize-dropdown {
-    background: #1e1e1e !important;
-    border-color: #444 !important;
-}
-.bctb-summarize-dropdown button {
-    color: #ccc !important;
-}
-.bctb-summarize-dropdown button:hover {
-    background: #2a2a2a !important;
-}
+.aiobar-toolbar             { border-bottom-color: #333 !important; }
+.aiobar-social-btn,
+.aiobar-action-btn          { border-color: #444 !important; color: #ccc !important; }
+.aiobar-summarize-dropdown  { background: #1e1e1e !important; border-color: #444 !important; }
+.aiobar-summarize-dropdown button       { color: #ccc !important; }
+.aiobar-summarize-dropdown button:hover { background: #2a2a2a !important; }
 ```
 
 ### 10 — Restricting to Specific Post Categories
 
-By default the toolbar appears on all `is_single()` posts. To limit it, add a helper function to the plugin:
-
 ```php
-function bctb_should_show() {
+// In aiobar.php — replace both is_single() guards with this
+function aiobar_should_show() {
     return is_single() && in_category( array( 'tech', 'tutorials' ) );
 }
 ```
-
-Then replace both `if ( ! is_single() )` guards with `if ( ! bctb_should_show() )`.
 
 ---
 
@@ -226,7 +192,7 @@ Then replace both `if ( ! is_single() )` guards with `if ( ! bctb_should_show() 
 
 ### The Problem
 
-Many publishers run WordPress on an internal subdomain (e.g. `blog.mycompany.com`) but serve content publicly through a reverse proxy at a different URL (e.g. `mycompany.com/blog`). WordPress's `get_permalink()` returns the internal URL, so share links point to the wrong domain.
+Many publishers run WordPress on an internal subdomain (e.g. `blog.mycompany.com`) but serve content publicly through a reverse proxy at a different URL (e.g. `mycompany.com/blog`). WordPress's `get_permalink()` returns the internal URL, so share links point to the wrong domain — and when an AI cites the source, it cites the wrong URL.
 
 ### The Solution
 
@@ -235,36 +201,22 @@ Many publishers run WordPress on an internal subdomain (e.g. `blog.mycompany.com
 define( 'PUBLIC_BASE_URL', 'https://mycompany.com/blog' );
 ```
 
-The plugin strips the scheme and host from the WordPress permalink and prepends your public base URL:
-
 | WordPress permalink | Resulting share URL |
 |---|---|
 | `https://blog.mycompany.com/how-we-built-our-api/` | `https://mycompany.com/blog/how-we-built-our-api/` |
 
-Leave `PUBLIC_BASE_URL` undefined (or set to `''`) for standard single-domain WordPress installs.
+Leave `PUBLIC_BASE_URL` undefined (or `''`) for standard single-domain installs.
 
 ---
 
 ## Caching
 
-If the toolbar is invisible after activation, the cause is almost always stale cache. Clear in this order:
+If the toolbar is invisible after activation, clear caches in this order:
 
-1. **WordPress cache plugin**
-   - WP Super Cache: *Settings → Delete Cache*
-   - W3 Total Cache: *Performance → Purge All Caches*
-   - LiteSpeed Cache: *LiteSpeed Cache → Purge All*
-
-2. **Hosting panel cache**
-   - Kinsta: MyKinsta → Clear Cache
-   - WP Engine: *WP Engine → Purge All Caches*
-   - SiteGround: *Speed → Caching → Flush Cache*
-
-3. **CDN cache**
-   - Cloudflare: *Caching → Configuration → Purge Everything*
-
-4. **Browser hard reload**
-   - Windows/Linux: `Ctrl + Shift + R`
-   - Mac: `Cmd + Shift + R`
+1. **WordPress cache plugin** — WP Super Cache, W3 Total Cache, LiteSpeed Cache
+2. **Hosting panel** — Kinsta, WP Engine, SiteGround
+3. **CDN** — Cloudflare: *Caching → Purge Everything*
+4. **Browser** — `Ctrl + Shift + R` (Win/Linux) or `Cmd + Shift + R` (Mac)
 
 ---
 
@@ -272,78 +224,72 @@ If the toolbar is invisible after activation, the cause is almost always stale c
 
 ### Why no `<script>` tags inside `the_content`?
 
-Browsers refuse to execute JavaScript injected via `innerHTML` as a fundamental security rule (the HTML spec classifies such scripts as "inert"). WordPress page builders, caching layers, and headless setups routinely write post content via `innerHTML`. Any `<script>` tag inside would silently do nothing.
-
-This plugin uses `wp_enqueue_script()` + `wp_add_inline_script()` so the JS is emitted as a proper footer `<script>` tag that the browser fully trusts and executes.
+Browsers refuse to execute JavaScript injected via `innerHTML` — the HTML spec classifies such scripts as inert. This plugin uses `wp_enqueue_script()` + `wp_add_inline_script()` so the JS is emitted as a proper footer `<script>` tag.
 
 ### Why event delegation?
 
 ```js
 document.addEventListener('click', function(e) {
-  const btn = e.target.closest('[data-bctb-action]');
+  const btn = e.target.closest('[data-aiobar-action]');
   if (!btn) return;
-  // handle action
 });
 ```
 
-If the toolbar HTML is injected after `DOMContentLoaded` fires (common with caching layers or deferred content), element-level listeners bound during page load would find nothing to attach to. Document-level delegation intercepts clicks regardless of when the target element was added to the DOM.
+If the toolbar HTML is injected after `DOMContentLoaded` fires (common with caching layers or page builders), element-level listeners would find nothing to bind to. Document-level delegation works regardless of when the element was added to the DOM.
 
 ### Why `is_single()` instead of URL path checks?
 
-`strpos($_SERVER['REQUEST_URI'], ...)` breaks when WordPress runs behind a reverse proxy — the `REQUEST_URI` seen by PHP won't match the public URL. `is_single()` evaluates WordPress's internal query object and works correctly in all deployment topologies.
+`strpos($_SERVER['REQUEST_URI'], ...)` breaks behind a reverse proxy. `is_single()` evaluates WordPress's internal query object and works in all deployment topologies.
 
 ### Why zero external dependencies?
 
-No CDN fonts, no icon libraries, no tracking pixels, no third-party scripts. The toolbar adds zero network requests and zero third-party cookies. This keeps the plugin GDPR-friendly and fast on every page load.
+No CDN fonts, no icon libraries, no tracking pixels. Zero extra network requests. GDPR-friendly out of the box.
 
 ---
 
 ## File Structure
 
 ```
-blog-content-toolbar/
-├── blog-content-toolbar.php   ← Single-file plugin (620 lines)
-└── README.md
+aiobar/
+└── aiobar.php   ← entire plugin in one file
 ```
-
-Everything — PHP, CSS, JS, SVG icons — lives in one file. No build step. No Composer. No npm.
 
 ---
 
 ## Browser Support
 
-| Browser | Minimum version |
+| Browser | Minimum |
 |---|---|
-| Chrome / Edge (Chromium) | 88+ |
+| Chrome / Edge | 88+ |
 | Firefox | 78+ |
 | Safari | 14+ |
 | Samsung Internet | 13+ |
 
-Internet Explorer is not supported.
+IE not supported.
 
 ---
 
 ## Changelog
 
 ### 1.0.0 — 2025-07-02
-- Initial release
+- Initial release as AIObar
 - Social share: Facebook, LinkedIn, X, Reddit
 - Summarize dropdown: Claude, ChatGPT, Perplexity
 - Copy for LLM with clipboard fallback
 - View Markdown collapsible panel
-- Fully configurable via PHP constants
-- `PUBLIC_BASE_URL` support for subdomain/proxy setups
+- Configurable via PHP constants (`AIOBAR_*`)
+- `PUBLIC_BASE_URL` for subdomain/proxy setups
 - Zero external dependencies
 
 ---
 
 ## Contributing
 
-Pull requests welcome. Please open an issue first to discuss what you'd like to change.
+Pull requests welcome. Please open an issue first to discuss the change.
 
 ---
 
 ## License
 
-GPL-2.0+
+GPL-2.0+  
 https://www.gnu.org/licenses/gpl-2.0.html
